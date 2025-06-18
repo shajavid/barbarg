@@ -1,0 +1,13 @@
+jdatetime
+blinker==1.7.0
+torch
+torchvision
+flask
+flask_sqlalchemy
+celery
+requests
+pandas
+openpyxl
+
+
+celery -A app.celery worker --pool=threads  -l info --concurrency=100

@@ -1,0 +1,171 @@
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربات باربرگ - {{bot_name}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/simple-datatables/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/style/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+
+</head>
+
+<body class="bg-gray-100 text-gray-900" dir="rtl">
+
+    <div class="min-h-screen flex">
+
+        <aside class="w-50 bg-gray-800 text-white flex-shrink-0">
+            <div class="p-6 bg-gray-800">
+                <div class="flex items-center gap-4">
+                    <img class="w-10 h-10 rounded-full" src="{{ url_for('static', filename='assets/images/logo.png') }}"
+                        alt="">
+                    <div class="font-medium dark:text-white">
+                        <div>باربرگ</div>
+                        <div
+                            class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
+                            v1.1.3</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <nav class="mt-6">
+                <ul>
+                    <li class="mb-4">
+                        <a href="/"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-list ml-2"></i>
+                            لیست اطلاعات
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/real"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-users ml-2"></i>
+                            حقیقی
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/daily"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-clock ml-2"></i>
+                            روزانه
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/settings"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-cog ml-2"></i>
+                            تنظیمات
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="flex-1 bg-gray-100 p-8">
+            <nav class="bg-white p-3 rounded-md w-full shadow-sm" aria-label="breadcrumb">
+                <ol class="flex text-gray-500 space-x-2 rtl:space-x-reverse">
+
+                    <li class="breadcrumb-item">
+                        <a href="/" class="text-blue-600 hover:text-blue-800">خانه</a>
+
+                    </li>
+
+
+
+                </ol>
+            </nav>
+            <div class="bg-white shadow-md rounded p-6 mt-6">
+                <h1 class="text-2xl font-bold mb-6">تنظیمات</h1>
+                <form action="{{ url_for('save_settings') }}" method="POST" class="space-y-6">
+
+                    <!-- تلاش مجدد در خطا -->
+                    <div class="flex items-center">
+                        <label for="retry_on_error" class="w-1/3 font-bold">تلاش مجدد در خطا:</label>
+                        <input type="checkbox" id="retry_on_error" name="retry_on_error"
+                            class="form-checkbox h-5 w-5 text-blue-600" {{ 'checked' if settings.retry_on_error else ''
+                            }}>
+                    </div>
+
+                    <!-- ذخیره گزارش خودکار -->
+                    <div class="flex items-center">
+                        <label for="auto_save_logs" class="w-1/3 font-bold">ذخیره گزارش خودکار:</label>
+                        <input type="checkbox" id="auto_save_logs" name="auto_save_logs"
+                            class="form-checkbox h-5 w-5 text-blue-600" {{ 'checked' if settings.auto_save_logs else ''
+                            }}>
+                    </div>
+
+                    <!-- مرور خودکار لیست -->
+                    <div class="flex items-center">
+                        <label for="auto_scroll_list" class="w-1/3 font-bold">مرور خودکار لیست:</label>
+                        <input type="checkbox" id="auto_scroll_list" name="auto_scroll_list"
+                            class="form-checkbox h-5 w-5 text-blue-600" {{ 'checked' if settings.auto_scroll_list
+                            else '' }}>
+                    </div>
+
+                    <!-- ثبت با اکانت آزاد -->
+                    <div class="flex items-center">
+                        <label for="use_free_account" class="w-1/3 font-bold">ثبت با اکانت آزاد:</label>
+                        <input type="checkbox" id="use_free_account" name="use_free_account"
+                            class="form-checkbox h-5 w-5 text-blue-600" {{ 'checked' if settings.use_free_account
+                            else '' }}>
+                    </div>
+
+                    <div class="mb-6">
+                        <!-- تعداد تلاش مجدد در خطا -->
+                        <label for="retry_count" class="font-bold block mb-2 text-gray-900 dark:text-white">
+                            تعداد تلاش مجدد در خطا:
+                        </label>
+                        <input id="retry_count" type="number" min="0" max="10" step="1" name="retry_count"
+                            class="w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            value="{{ settings.retry_count }}" placeholder="Enter retry count">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="request_interval" class="font-bold block mb-2 text-gray-900 dark:text-white">
+                            فاصله زمانی بین ثبت درخواست برای یک اکانت (دقیقه):
+                        </label>
+                        <input id="request_interval" type="number" min="1" max="1000" step="1" name="request_interval"
+                            class="w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            value="{{ settings.request_interval }}" placeholder="Enter request interval">
+
+                    </div>
+
+
+                    <div class="mb-6">
+                        <label for="request_interval" class="font-bold block mb-2 text-gray-900 dark:text-white">
+                            فاصله زمانی بین ثبت درخواست ها (ثانیه):
+                        </label>
+                        <input id="delay_interval" type="number" min="1" max="1000" step="1" name="delay_interval"
+                            class="w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            value="{{ settings.delay_interval }}" placeholder="Enter request interval">
+
+                    </div>
+
+
+                    <!-- دکمه ذخیره -->
+                    <div class="flex justify-center mt-6">
+                        <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
+                            ذخیره تنظیمات
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+</body>

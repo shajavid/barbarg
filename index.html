@@ -1,0 +1,429 @@
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربات باربرگ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/simple-datatables/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/style/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+
+</head>
+
+<body class="bg-gray-100 text-gray-900" dir="rtl">
+
+    <div class="min-h-screen flex">
+
+        <aside class="w-50 bg-gray-800 text-white flex-shrink-0">
+            <div class="p-6 bg-gray-800">
+                <div class="flex items-center gap-4">
+                    <img class="w-10 h-10 rounded-full" src="{{ url_for('static', filename='assets/images/logo.png') }}"
+                        alt="">
+                    <div class="font-medium dark:text-white">
+                        <div>باربرگ</div>
+                        <div
+                            class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
+                            v1.1.3</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <nav class="mt-6">
+                <ul>
+                    <li class="mb-4">
+                        <a href="/"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-list ml-2"></i>
+                            لیست اطلاعات
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/real"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-users ml-2"></i>
+                            حقیقی
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/daily"
+                            class="flex items-center py-3 px-4 text-lg hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-clock ml-2"></i>
+                            روزانه
+                        </a>
+                    </li>
+
+                    <li class="mb-4">
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <h3 class="text-lg font-bold mb-4 flex items-center">
+                                <i class="fas fa-cog ml-2"></i> تنظیمات
+                            </h3>
+                            <form action="{{ url_for('save_settings') }}" method="POST" class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <label for="retry_on_error" class="text-sm cursor-pointer">تلاش مجدد در خطا:</label>
+                                    <label for="retry_on_error" class="relative w-12 h-6 cursor-pointer">
+                                        <input type="checkbox" id="retry_on_error" name="retry_on_error" 
+                                               class="sr-only peer" 
+                                               {{ 'checked' if settings.retry_on_error else '' }}>
+                                        <div class="absolute inset-0 bg-gray-300 rounded-full peer-checked:bg-blue-500 transition-colors"></div>
+                                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform peer-checked:translate-x-6"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <label for="auto_save_logs" class="text-sm cursor-pointer">ذخیره گزارش خودکار:</label>
+                                    <label for="auto_save_logs" class="relative w-12 h-6 cursor-pointer">
+                                        <input type="checkbox" id="auto_save_logs" name="auto_save_logs" 
+                                               class="sr-only peer" 
+                                               {{ 'checked' if settings.auto_save_logs else '' }}>
+                                        <div class="absolute inset-0 bg-gray-300 rounded-full peer-checked:bg-blue-500 transition-colors"></div>
+                                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform peer-checked:translate-x-6"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <label for="auto_scroll_list" class="text-sm cursor-pointer">مرور خودکار لیست:</label>
+                                    <label for="auto_scroll_list" class="relative w-12 h-6 cursor-pointer">
+                                        <input type="checkbox" id="auto_scroll_list" name="auto_scroll_list" 
+                                               class="sr-only peer" 
+                                               {{ 'checked' if settings.auto_scroll_list else '' }}>
+                                        <div class="absolute inset-0 bg-gray-300 rounded-full peer-checked:bg-blue-500 transition-colors"></div>
+                                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform peer-checked:translate-x-6"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <label for="use_free_account" class="text-sm cursor-pointer">ثبت با اکانت آزاد:</label>
+                                    <label for="use_free_account" class="relative w-12 h-6 cursor-pointer">
+                                        <input type="checkbox" id="use_free_account" name="use_free_account" 
+                                               class="sr-only peer" 
+                                               {{ 'checked' if settings.use_free_account else '' }}>
+                                        <div class="absolute inset-0 bg-gray-300 rounded-full peer-checked:bg-blue-500 transition-colors"></div>
+                                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform peer-checked:translate-x-6"></div>
+                                    </label>
+                                </div> 
+                                
+                                <div class="mb-4">
+                                    <label for="retry_count" class="block text-sm mb-2">تعداد تلاش مجدد در خطا:</label>
+                                    <div class="flex items-center">
+                                        <input id="retry_count" type="range" min="0" max="10" step="1" name="retry_count" 
+                                            class="w-full cursor-pointer" 
+                                            value="{{ settings.retry_count }}" 
+                                            oninput="document.getElementById('retry_count_display').innerText = this.value;">
+                                        <span id="retry_count_display" class="ml-3 text-sm">{{ settings.retry_count }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="request_interval" class="block text-sm mb-2">فاصله بین ثبت در هر اکانت (دقیقه):</label>
+                                    <div class="flex items-center">
+                                        <input id="request_interval" type="range" min="10" max="1440" step="1" name="request_interval" 
+                                            class="w-full cursor-pointer" 
+                                            value="{{ settings.request_interval }}" 
+                                            oninput="document.getElementById('request_interval_display').innerText = this.value;">
+                                        <span id="request_interval_display" class="ml-3 text-sm">{{ settings.request_interval }}</span>
+                                    </div>
+                                </div>
+
+
+                                <div class="mb-4">
+                                    <label for="chunk_size" class="block text-sm mb-2">تعداد ارسال در هر بار</label>
+                                    <div class="flex items-center">
+                                        <input id="chunk_size" type="range" min="10" max="500" step="1" name="chunk_size" 
+                                            class="w-full cursor-pointer" 
+                                            value="{{ settings.chunk_size }}" 
+                                            oninput="document.getElementById('chunk_size_display').innerText = this.value;">
+                                        <span id="chunk_size_display" class="ml-3 text-sm">{{ settings.chunk_size }}</span>
+                                    </div>
+                                </div>
+                                
+
+
+                                <div class="text-center">
+                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">ذخیره</button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+
+
+
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="flex-1 bg-gray-100 p-8">
+            <nav class="bg-white p-3 rounded-md w-full shadow-sm" aria-label="breadcrumb">
+                <ol class="flex text-gray-500 space-x-2 rtl:space-x-reverse">
+
+                    <li class="breadcrumb-item">
+                        <a href="/" class="text-blue-600 hover:text-blue-800">خانه</a>
+
+                    </li>
+
+
+
+                </ol>
+            </nav>
+
+
+
+
+            <div class="bg-white shadow-md rounded p-6 mt-6">
+
+                <div class="flex-1 p-6">
+                    <div class="max-w-7xl mx-auto">
+
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-5 w-100">
+                            <h2 class="text-2xl font-bold mb-4">لیست اطلاعات<h2>
+                                    <form action="/upload" method="POST" enctype="multipart/form-data"
+                                        class="space-y-4">
+                                        <input type="file" name="file" accept=".xlsx"
+                                            class="mt-1 p-2 border border-gray-300 rounded w-full">
+                                        <button type="submit"
+                                            class="bg-blue-500 btn text-white py-2 rounded hover:bg-blue-600">بارگذاری اکسل</button>
+                                        <button class="bg-red-500 btn text-white py-2 rounded hover:bg-red-600"
+                                            id="clear-btn">پاک کردن لیست
+                                        </button>
+
+                                        <button class="bg-green-500 btn text-white py-2 rounded hover:bg-green-600"
+                                            id="select-all-btn">انتخاب همه  
+                                        </button>
+
+                                        <button class="bg-red-500 btn text-white py-2 rounded hover:bg-red-600"
+                                            id="unselect-all-btn">عدم انتخاب همه  
+                                        </button>
+
+
+
+
+
+                                    </form>
+                        </div>
+
+                        <div class="mt-4">
+                            <ul id="tabs" class="flex cursor-pointer">
+                                <li class="mr-4 py-2 px-4 bg-gray-300 rounded hover:bg-gray-400 active-tab"
+                                    data-tab="all">
+                                    همه تسک‌ها (<span id="all-tasks-count">0</span>)
+                                </li>
+                                <li class="mr-4 py-2 px-4 bg-gray-300 rounded hover:bg-gray-400" data-tab="success">
+                                    موفقیت آمیز (<span id="success-tasks-count">0</span>)
+                                </li>
+                                <li class="mr-4 py-2 px-4 bg-gray-300 rounded hover:bg-gray-400" data-tab="error">
+                                    خطا (<span id="error-tasks-count">0</span>)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-lg p-6 rounded-lg shadow-md ">
+                            <div class="overflow-x-scroll">
+                                <table id="tasksTable"
+                                    class="min-w-full divide-y divide-gray-200 table-auto overflow-x-scroll">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th class="px-2 py-2">
+                                                 
+                                            </th>
+                                            <th class="px-2 py-2" data-name="index">ردیف اکسل</th>
+                                            <th class="px-2 py-2" data-name="username">نام کاربری</th>
+                                            <th class="px-2 py-2" data-name="password">رمز عبور</th>
+                                            <th class="px-2 py-2" data-name="driver_national_id">اطلاعات راننده</th>
+                                            <th class="px-2 py-2" data-name="pelak">پلاک</th>
+                                            <th class="px-2 py-2" data-name="sender_name">نام فرستنده</th>
+                                            <th class="px-2 py-2" data-name="sender_mobile">شماره فرستنده</th>
+                                            <th class="px-2 py-2" data-name="receiver_name">نام گیرنده</th>
+                                            <th class="px-2 py-2" data-name="receiver_mobile">شماره گیرنده</th>
+                                            <th class="px-2 py-2" data-name="money">ارزش بار</th>
+                                            <th class="px-2 py-2" data-name="status">وضعیت</th>
+                                            <th class="px-4 py-2">ابزار</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200 text-center">
+
+                                        {% if tasks == {} %}
+                                        <tr>
+                                            <td colspan="20" class="text-center py-4">هیچ تسکی یافت نشد</td>
+                                        </tr>
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <div id="editTaskModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
+            <h2 class="text-2xl font-bold mb-4 text-center">ویرایش اطلاعات کاربر</h2>
+
+            <div class="flex justify-between items-center license-container mb-10">
+                <div class="license-plate">
+                    <div class="blue-column">
+                        <div class="flag">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="text">
+                            <div>I.R.</div>
+                            <div>IRAN</div>
+                        </div>
+                    </div>
+                    <span id="plate-number"></span>
+
+                    <span class="alphabet-column" id="plate-letter"></span>
+
+
+                    <div class="iran-column">
+                        <span>ایــران</span>
+                        <strong id="plate-iranNo-strong"></strong>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="flex justify-between items-center wallet-container mb-10">
+                <label for="wallet-amount" class="font-bold">موجودی کیف پول:</label>
+                <span id="wallet-amount">0</span>
+                <!-- refresh buttopn -->
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" id="refresh-wallet">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+
+
+
+            <!-- Form Start -->
+            <form id="editTaskForm" class="space-y-5">
+
+                <!-- hidden input key -->
+                <input type="hidden" id="key" name="key">
+
+                <!-- Grouped Rows for Form Fields -->
+                <div class="flex w-full items-center space-x-4">
+                    <div class="flex-1 ml-2">
+                        <label for="username" class="w-32 text-right font-bold">نام کاربری:</label>
+                        <input type="text" id="username" name="username"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1">
+                        <label for="driver_national_id" class="w-32 text-right font-bold">کد ملی راننده:</label>
+                        <input type="number" id="driver_national_id" name="driver_national_id"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                </div>
+
+                <!-- Grouping two fields into a single row -->
+                <div class="flex w-full items-center space-x-4">
+                    <div class="flex-1 ml-2">
+                        <label for="sender_name" class="w-32 text-right font-bold">نام فرستنده:</label>
+                        <input type="text" id="sender_name" name="sender_name"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+
+                    <div class="flex-1 ml-2">
+                        <label for="sender_mobile" class="w-32 text-right font-bold">شماره فرستنده:</label>
+                        <input type="text" id="sender_mobile" name="sender_mobile"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label for="sender_lat" class="w-32 text-right font-bold">
+                            طول جغرافیایی :
+                        </label>
+                        <input type="text" id="sender_lat" name="sender_lat"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label for="sender_lon" class="w-32 text-right font-bold">
+                            عرض جغرافیایی :
+                        </label>
+                        <input type="text" id="sender_lon" name="sender_lon"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                </div>
+
+
+                <!-- Grouping two fields into a single row -->
+                <div class="flex w-full items-center space-x-4">
+                    <div class="flex-1 ml-2">
+                        <label for="receiver_name" class="w-32 text-right font-bold">نام گیرنده:</label>
+                        <input type="text" id="receiver_name" name="receiver_name"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label for="receiver_lat" class="w-32 text-right font-bold">
+                            طول جغرافیایی :
+                        </label>
+                        <input type="text" id="receiver_lat" name="receiver_lat"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label for="receiver_lon" class="w-32 text-right font-bold">
+                            عرض جغرافیایی :
+                        </label>
+                        <input type="text" id="receiver_lon" name="receiver_lon"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                    <div class="flex-1">
+                        <label for="receiver_mobile" class="w-32 text-right font-bold">شماره گیرنده:</label>
+                        <input type="text" id="receiver_mobile" name="receiver_mobile"
+                            class="w-full border border-gray-300 p-2 rounded-md">
+                    </div>
+
+                </div>
+
+
+                <div class="flex justify-center space-x-4 mt-4">
+                    <button type="button" id="closeModal"
+                        class="bg-red-500 text-white px-4 py-2 rounded-md ml-2">بستن</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">ثبت اطلاعات</button>
+                </div>
+        </div>
+
+
+
+        </form>
+    </div>
+
+
+    <script
+        src="{{ url_for('static', filename='assets/plugins/simple-datatables/simple-datatables@latest.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+
+
+</body>
+
+</html>

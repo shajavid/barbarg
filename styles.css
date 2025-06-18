@@ -1,0 +1,392 @@
+ 
+
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Regular.eot');
+    src: url('../fonts/Vazir-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/Vazir-Regular.woff2') format('woff2'),
+        url('../fonts/Vazir-Regular.woff') format('woff'),
+        url('../fonts/Vazir-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Markazi Text';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../fonts/markazitext.woff2') format('woff2');
+    unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0898-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EFD-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+
+
+body {
+    font-family: 'Vazir', sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+table.dataTable thead {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.noise-background {
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+#modalOverlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#modalOverlay.active {
+    opacity: 1;
+}
+
+/* Modal transition effect */
+#editUserModal {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#editUserModal.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.editable-input {
+    font-size: 1.3em;
+    width: 2.5em;
+    border: none;
+    background: none;
+    text-align: center;
+    outline: none;
+    padding: 0.05em;
+    text-shadow: 0.02em 0.02em 0.03em rgba(0, 0, 0, 0.3), -0.03em -0.03em 0.02em #fff;
+    color: rgb(40, 47, 37);
+}
+
+.license-container {
+    align-items: center;
+    font-size: 40px;
+}
+
+.license-plate {
+    font-family: 'Markazi Text';
+    height: auto;
+    margin: 0 auto;
+    min-width: 6.8em;
+    display: inline-block;
+    border-radius: 0.2em;
+    border: 0.08em solid #333;
+    line-height: 1em;
+    background-color: #ddd;
+    text-align: center;
+    color: rgb(40, 47, 37);
+    box-shadow: inset 0.05em 0.05em 0.1em rgba(0, 0, 0, 0.3),
+        inset -0.05em -0.05em 0.1em #ffffff, 0.05em 0.05em 0.1em rgba(0, 0, 0, 0.3);
+}
+
+.license-plate>.blue-column {
+    width: 0.7em;
+    height: 1.3em;
+    float: left;
+    background-color: #042591;
+    position: relative;
+}
+
+.license-plate>.blue-column>.flag {
+    margin: 0.1em;
+}
+
+.license-plate>.blue-column>.flag :nth-child(1) {
+    height: 0.1em;
+    background-color: green;
+}
+
+.license-plate>.blue-column>.flag :nth-child(2) {
+    height: 0.1em;
+    background-color: #fff;
+}
+
+.license-plate>.blue-column>.flag :nth-child(3) {
+    height: 0.1em;
+    background-color: red;
+}
+
+.license-plate>.blue-column>.text {
+    color: #ffffff;
+    font-size: 0.2em;
+    line-height: 1em;
+    text-align: left;
+    font-family: sans-serif;
+    position: absolute;
+
+    left: 0.5em;
+}
+
+.license-plate>span,
+.license-plate>input.editable-input {
+    margin: 0 0.1em;
+    font-size: 1.3em;
+    padding: 0.05em;
+
+    display: inline-block;
+    float: left;
+}
+
+.license-plate>.alphabet-column {
+    line-height: 0.5em;
+    margin: 0;
+}
+
+
+
+.license-plate>.iran-column {
+    width: 1.2em;
+    text-align: center;
+    float: right;
+    border-left: 0.08em solid #333;
+    height: inherit;
+}
+
+.license-plate>.iran-column>span {
+    font-size: 0.3em;
+    display: block;
+    line-height: 1em;
+}
+
+.license-plate>.iran-column>input {
+    font-size: 1.1em;
+    text-shadow: 0.03em 0.03em 0.03em rgba(0, 0, 0, 0.3), -0.04em -0.04em 0.02em #fff;
+}
+
+.loader {
+    border-top-color: #3498db;
+    animation: spinner 1.5s linear infinite;
+}
+
+
+.wallet-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+
+.wallet-container .balance {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+ 
+body.loaded #loadingSpinner {
+    display: none;
+}
+
+.custom-input {
+    width: 150px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    text-align: right;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 5px 15px;
+    background-color: #f3f4f6;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-blue {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+}
+
+.btn-gray {
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+}
+
+.input-box {
+    width: 200px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.container {
+    padding: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.col {
+    display: flex;
+    align-items: center;
+}
+
+.col label {
+    margin-left: 10px;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #3b82f6; /* Blue color for progress */
+    transition: width 3s linear; /* Smoothly animate the width */
+}
+
+#closeModal{
+    z-index: 1000;
+}
+
+
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(14, 15px); /* 14 ستون کوچک برای هر سلول */
+    gap: 2px; /* فاصله بین سلول‌ها */
+    justify-content: center;
+}
+
+.activity-cell {
+    width: 15px;
+    height: 15px;
+    border-radius: 2px;
+    background-color: #ebedf0; /* رنگ پیش‌فرض */
+}
+
+.activity-cell.registered {
+    background-color: #4caf50; /* سبز برای روزهای ثبت‌شده */
+}
+
+.activity-cell.not-registered {
+    background-color: #e57373; /* قرمز برای روزهای ثبت‌نشده */
+}
+
+.disabled {
+    opacity: 0.5;
+    background-color: #eee;
+}
+
+
+
+/* رنگ آیکون‌ها و وضعیت */
+.icon-info {
+    background-image: url('/path/to/info-icon.svg');
+}
+
+.icon-error {
+    background-image: url('/path/to/error-icon.svg');
+}
+
+/* تنظیمات tooltip */
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+    white-space: nowrap;
+}
+
+
+
+/* پس‌زمینه دایره */
+.circle-bg {
+    stroke-width: 4;
+}
+
+/* دایره اصلی */
+.circle {
+    stroke-dasharray: 0, 100;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dasharray 0.3s ease-in-out;
+}
+
+
+
+/* استایل چک‌باکس‌ها */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.custom-checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #4f46e5; /* رنگ آبی */
+    border-color: #4f46e5;
+}
+
+.custom-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:hover {
+    border-color: #4f46e5;
+}

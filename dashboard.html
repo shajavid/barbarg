@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت ربات‌ها</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/style/styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{ url_for('static', filename='assets/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- هدر -->
+    <header class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-gray-300 text-sm   text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center py-4 px-6">
+            <!-- لوگو -->
+            <div class="flex items-center gap-4">
+                <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="لوگو"
+                    class="w-12 h-12 rounded-full">
+                <h1 class="text-xl font-bold">ربات باربرگ</h1>
+            </div>
+            <!-- لینک‌ها -->
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="#bots" class="text-white hover:underline">لیست ربات‌ها</a>
+                <a href="#create" class="text-white hover:underline">ایجاد ربات</a>
+                <a href="#contact" class="text-white hover:underline">تماس با ما</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- محتوای اصلی -->
+    <main class="container mx-auto px-4 flex gap-8 mt-10 flex-1">
+        <!-- لیست ربات‌ها -->
+        <section id="bots" class="flex-1 bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-lg font-semibold text-gray-800 border-b pb-3">لیست ربات‌ها</h2>
+
+            <div class="overflow-x-auto mt-6">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-600 uppercase tracking-wider">
+                                نام ربات</th>
+                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-600 uppercase tracking-wider">
+                                پورت</th>
+                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-600 uppercase tracking-wider">
+                                عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- empty -->
+                        {% if not bots %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-gray-600" colspan="3">هیچ رباتی
+                                وجود ندارد.</td>
+                        </tr>
+                        {% endif %}
+                        {% for bot in bots %}
+                        <tr class="hover:bg-gray-50">
+                            <!-- نام ربات -->
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-medium text-gray-900">{{ bot.name }}
+                            </td>
+                            <!-- پورت -->
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-gray-600">{{ bot.port }}</td>
+                            <!-- عملیات -->
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <div class="flex items-center gap-4 justify-end">
+                                    <button onclick="stopBot('{{ bot.name }}')"
+                                        class="text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow-md transition">
+                                        توقف
+                                    </button>
+                                    <a href="http://127.0.0.1:{{ bot.port }}" target="_blank"
+                                        class="text-sm bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition">
+                                        باز کردن
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ایجاد ربات جدید -->
+        <section id="create" class="w-1/3 bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-lg font-semibold text-gray-800 border-b pb-3">ایجاد ربات جدید</h2>
+            <form id="create-bot-form" class="mt-4 space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">نام ربات:</label>
+                    <input type="text" id="name" name="name" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                </div>
+                <div>
+                    <label for="port" class="block text-sm font-medium text-gray-700">پورت:</label>
+                    <input type="number" id="port" name="port" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                </div>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-green-400 to-green-600 text-white px-4 py-2 rounded hover:opacity-90 transition">
+                    ایجاد
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <!-- فوتر -->
+    <footer id="contact" class="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-gray-300 text-sm py-6 mt-10">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
+            <!-- اطلاعات تماس -->
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-lg font-semibold text-white">تماس با ما</h3>
+                <p>ایمیل:
+                    <a href="mailto:barbargbot@gmail.com" class="hover:text-white">
+                        barbargbot@gmail.com
+                    </a>
+                </p>
+                <p>تلگرام :
+                    <a href="https://t.me/fullbarbarg_bot" class="hover:text-white">@fullbarbarg_bot</a>
+                </p>
+            </div>
+            <!-- لینک‌های فوتر -->
+            <nav class="flex flex-wrap gap-6 text-center">
+                <a href="#" class="hover:text-white">حریم خصوصی</a>
+                <a href="#" class="hover:text-white">قوانین استفاده</a>
+                <a href="#" class="hover:text-white">راهنما</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        document.getElementById('create-bot-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const port = document.getElementById('port').value;
+
+            axios.post('/start_bot', { name, port })
+                .then(response => {
+                    console.log
+                    showToast(response.data.message, "success")
+                    generateNameAndPort();
+                    setTimeout(function () {
+                        location.reload();
+
+                    }, 2000);
+                })
+                .catch(error => {
+                    showToast(error.response.data.error, "error")
+                });
+        });
+
+        function stopBot(name) {
+            axios.post(`/stop_bot/${name}`)
+                .then(response => {
+                    showToast(response.data.message, "success")
+                    generateNameAndPort();
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                })
+                .catch(error => {
+                    showToast(error.response.data.error, "error")
+                });
+        }
+
+        function generateNameAndPort() {
+            axios.get('/generate_bot_info')
+                .then(response => {
+                    const { name, port } = response.data;
+                    document.getElementById('name').value = name;
+                    document.getElementById('port').value = port;
+                })
+                .catch(error => {
+                    showToast("خطایی در تولید نام و پورت رخ داده است.", 'error');
+                });
+        }
+
+        generateNameAndPort();
+
+        function showToast(message, type = 'info') {
+            const options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": type === 'error' ? "5000" : "3000"
+            };
+
+            if (type === 'success') {
+                toastr.success(message, '', options);
+            } else if (type === 'error') {
+                toastr.error(message, '', options);
+            } else {
+                toastr.info(message, 'Info', options);
+            }
+        };
+    </script>
+</body>
+
+</html>
